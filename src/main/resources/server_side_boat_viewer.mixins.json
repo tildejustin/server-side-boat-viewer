@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.maximumg9.server_side_boat_viewer.mixins",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],
   "client": [
@@ -12,5 +12,9 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "conformVisibility": true,
+    "requireAnnotations": true
   }
 }

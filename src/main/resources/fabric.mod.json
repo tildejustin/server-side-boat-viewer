@@ -4,12 +4,13 @@
   "version": "${version}",
   "name": "Server Side Boat Viewer",
   "description": "",
-  "authors": [],
+  "authors": [
+    "MaximumG9"
+  ],
   "contact": {
-    "repo": "https://github.com/MaximumG9/Server Side Boat Viewer"
+    "repo": "https://github.com/tildejustin/server-side-boat-viewer"
   },
-  "license": "All-Rights-Reserved",
-  "icon": "assets/server_side_boat_viewer/icon.png",
+  "license": "MIT",
   "environment": "client",
   "entrypoints": {
   },
@@ -17,7 +18,7 @@
     "server_side_boat_viewer.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
-    "minecraft": "${minecraft_version}"
+    "fabricloader": "*",
+    "minecraft": "*"
   }
 }

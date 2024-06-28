@@ -1,25 +1,33 @@
 package com.maximumg9.server_side_boat_viewer.mixins;
 
 import com.maximumg9.server_side_boat_viewer.ServerSideBoatViewer;
-import net.minecraft.client.Keyboard;
+import net.minecraft.client.*;
 import net.minecraft.text.Text;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Keyboard.class)
-public class KeyboardMixin {
-    @Inject(method="processF3",at=@At(value="INVOKE",target="Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;)V"))
+public abstract class KeyboardMixin {
+    @Shadow
+    @Final
+    private MinecraftClient client;
+
+    @Shadow
+    protected abstract void debugWarn(String key, Object... args);
+
+    @Inject(method = "processF3", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;)V", ordinal = 0), slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=debug.pause.help")))
     private void addValueChoice(int key, CallbackInfoReturnable<Boolean> cir) {
-        ((Keyboard) ((Object) this)).client.inGameHud.getChatHud().addMessage(Text.of("F3 + Y = Turn on rendering of server versions of boats (singleplayer only)"));
+        this.client.inGameHud.getChatHud().addMessage(Text.of("F3 + Y = Turn on rendering of server versions of boats (singleplayer only)"));
     }
 
-    @Inject(method="processF3",at=@At(value="TAIL"))
+    @Inject(method = "processF3", at = @At(value = "TAIL"), cancellable = true)
     private void addKeybind(int key, CallbackInfoReturnable<Boolean> cir) {
-        if(key == 89) {
+        if (key == GLFW.GLFW_KEY_Y) {
             ServerSideBoatViewer.renderingServerBoats = !ServerSideBoatViewer.renderingServerBoats;
-            ((Keyboard) ((Object) this)).debugLog(Text.of(ServerSideBoatViewer.renderingServerBoats ? "Activated Server Boat Rendering" : "Deactivated Server Boat Rendering"));
+            this.debugWarn(ServerSideBoatViewer.renderingServerBoats ? "Activated Server Boat Rendering" : "Deactivated Server Boat Rendering");
+            cir.setReturnValue(true);
         }
     }
 }
